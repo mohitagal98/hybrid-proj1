@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+         database1:
+                image: mysql:5.7
+                container_name: mysqlserver
+                environment:
+                         MYSQL_ROOT_PASSWORD: abc@123
+                         MYSQL_DATABASE: bookingcalendar
+                         MYSQL_USER: user
+                         MYSQL_PASSWORD: user@123
+                volumes:
+                        - /storage/sqlstorage:/var/www/html
+                restart: always        
+
+         phpmyadmin1:
+                image: phpmyadmin/phpmyadmin:latest
+                container_name: phpmyadminc
+                environment: 
+                         MYSQL_ROOT_PASSWORD: abc@123
+                         MYSQL_USER: user
+                         MYSQL_PASSWORD: user@123
+                         PMA_HOST: database1
+                         PMA_PORT: 3306
+                ports: 
+                         - 8081:80
+                depends_on:
+                         - database1
+                restart: always
+
+         phpserver: 
+                image: mohitaga98/php-mysqli:1.0
+                container_name: website
+                ports: 
+                       - 80:80
+                volumes:
+                        - /storage/phpstorage:/var/www/html
+                restart: always
+                depends_on:
+                        - database1
+        
